@@ -1,0 +1,32 @@
+group 'com.nagisberry'
+version '1.0-SNAPSHOT'
+
+buildscript {
+    ext.kotlin_version = '1.0.4'
+
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+subprojects {
+    apply plugin: 'kotlin'
+
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
+
+    [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+
+    dependencies {
+        compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+        compile 'org.spigotmc:spigot:1.10.2-R0.1-SNAPSHOT'
+    }
+}
