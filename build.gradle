@@ -31,12 +31,18 @@ subprojects {
     }
 }
 
-project(":AstralCore") {
+project(':AstralCore') {
     jar {
         from configurations.runtime.filter {
             !it.name.contains('spigot')
         }.collect {
             it.isDirectory() ? it : zipTree(it)
         }
+    }
+}
+
+project(':AstralItems') {
+    dependencies {
+        compile project(':AstralCore')
     }
 }
