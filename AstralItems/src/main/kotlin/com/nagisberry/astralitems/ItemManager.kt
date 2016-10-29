@@ -19,7 +19,7 @@ object ItemManager {
 
     private val ID_VANILLA = "vanilla_item"
 
-    private val gson = Gson()
+    val gson = Gson()
     private val logger = Bukkit.getLogger()
 
     private val vanillaItems = HashMap<SimpleItemStack, ItemData>()
