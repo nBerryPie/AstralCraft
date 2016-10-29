@@ -49,7 +49,7 @@ object ItemManager {
             logger.warning("material is not found: ${ if (isVanilla) json.toString() else id }")
             return
         }
-        val damage = json["damage"]?.asInt ?: 0
+        val damage = json["damage"]?.asShort ?: 0
         val name = json["name"]?.asString ?: run {
             logger.warning("name is not found: ${ if (isVanilla) "${material.name}:$damage" else id }")
             return
