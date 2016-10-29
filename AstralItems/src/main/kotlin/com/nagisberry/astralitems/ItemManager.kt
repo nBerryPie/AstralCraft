@@ -62,12 +62,10 @@ object ItemManager {
         val types = json["types"]?.asJsonArray
                 ?.map(JsonElement::getAsString)
                 ?.map { try { ItemTypes.valueOf(it) } catch (e: IllegalArgumentException) { null } }
-                ?.filter { it != null } ?: emptyList()
-        val elements = Elements.values().filter {
-            json.has(it.name.toLowerCase())
-        }.map {
-            it to json[it.name.toLowerCase()].asJsonObject
-        }.toMap().mapValues { it.key(it.value) }
+                ?.filterNotNull() ?: emptyList()
+        val elements = Elements.values().map {
+            json[it.name.toLowerCase()]?.asJsonObject?.let { json -> it to json }
+        }.filterNotNull().map { it.first(it.second) }
         //ToDo: ItemDataInstanceの作成
         //ToDo: Mapに突っ込む
     }
