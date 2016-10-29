@@ -18,7 +18,7 @@ object ItemManager {
     private val gson = Gson()
     private val logger = Bukkit.getLogger()
 
-    fun loadFiles(dir: Path, isVanilla: Boolean) {
+    fun loadFiles(dir: Path, isVanilla: Boolean = false) {
         dir.forEach { path ->
             if (Files.isDirectory(path)) {
                 loadFiles(path, isVanilla || checkVanillaFile(path))
