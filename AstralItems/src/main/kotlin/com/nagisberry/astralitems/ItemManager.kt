@@ -71,12 +71,13 @@ object ItemManager {
                 ?.filterNotNull() ?: emptyList()
         val elements = Elements.values().map {
             json[it.name.toLowerCase()]?.asJsonObject?.let { json -> it to json }
-        }.filterNotNull().map { it.first(it.second) }
+        }.filterNotNull().map { it.first to it.first(it.second) }.toMap()
         val data = ItemData(id, material, damage, name, description, rarity, types, elements)
         if (isVanilla) {
             vanillaItems.put(SimpleItemStack(material, damage), data)
         } else {
             items.put(id, data)
+        }
     }
 
     fun checkVanillaFile(path: Path) = path.fileName.toString().startsWith("vanilla", true)
