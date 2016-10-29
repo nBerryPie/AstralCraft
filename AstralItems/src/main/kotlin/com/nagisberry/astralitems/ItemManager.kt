@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
+import com.nagisberry.astralitems.element.Elements
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import java.io.FileReader
@@ -62,7 +63,11 @@ object ItemManager {
                 ?.map(JsonElement::getAsString)
                 ?.map { try { ItemTypes.valueOf(it) } catch (e: IllegalArgumentException) { null } }
                 ?.filter { it != null } ?: emptyList()
-        //ToDo: Elementの読み込み
+        val elements = Elements.values().filter {
+            json.has(it.name.toLowerCase())
+        }.map {
+            it to json[it.name.toLowerCase()].asJsonObject
+        }.toMap().mapValues { it.key(it.value) }
         //ToDo: ItemDataInstanceの作成
         //ToDo: Mapに突っ込む
     }
