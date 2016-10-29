@@ -58,6 +58,10 @@ object ItemManager {
                 ?.map(JsonElement::getAsString)
                 ?.filter { it != null } ?: emptyList()
         val rarity = json["rarity"]?.asInt ?: 0
+        val types = json["types"]?.asJsonArray
+                ?.map(JsonElement::getAsString)
+                ?.map { try { ItemTypes.valueOf(it) } catch (e: IllegalArgumentException) { null } }
+                ?.filter { it != null } ?: emptyList()
         //ToDo: Elementの読み込み
         //ToDo: ItemDataInstanceの作成
         //ToDo: Mapに突っ込む
