@@ -16,6 +16,10 @@ data class ItemData(
         private val elements: Map<Elements, IElement>
 ) {
 
+    fun hasElement(element: Elements) = elements.containsKey(element)
+
+    fun getElement(element: Elements) = elements[element]
+
     fun getDefaultMetadata() = mutableMapOf("MAIN" to mapOf("rarity" to rarity as Any)).apply {
         elements.mapKeys { it.key.name }
                 .mapValues { it.value.getDefaultMetadata() }
