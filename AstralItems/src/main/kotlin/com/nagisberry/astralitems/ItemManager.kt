@@ -11,6 +11,7 @@ import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import java.io.FileReader
 import java.io.IOException
+import java.io.Reader
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.*
@@ -32,7 +33,7 @@ object ItemManager {
             } else if (path.toString().endsWith(".json", true)) {
                 try {
                     FileReader(path.toFile()).use { reader ->
-                        gson.fromJson(reader, JsonArray::class.java).forEach { json ->
+                        gson.fromJson<JsonArray>(reader).forEach { json ->
                             if (json is JsonObject) {
                                 loadItemData(json, isVanilla || checkVanillaFile(path))
                             } else {
@@ -82,4 +83,6 @@ object ItemManager {
     }
 
     fun checkVanillaFile(path: Path) = path.fileName.toString().startsWith("vanilla", true)
+
+    inline fun <reified T: Any> Gson.fromJson(json: Reader): T = fromJson(json, T::class.java)
 }
