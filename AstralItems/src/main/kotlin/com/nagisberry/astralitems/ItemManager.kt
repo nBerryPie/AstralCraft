@@ -41,7 +41,8 @@ object ItemManager {
                         }
                     }
                 } catch (e: IOException) {
-
+                    logger.warning("Load failure: " + path)
+                    e.printStackTrace()
                 }
             }
         }
