@@ -69,7 +69,7 @@ object ItemManager {
         val rarity = json["rarity"]?.asInt ?: 0
         val types = json["types"]?.asJsonArray
                 ?.map(JsonElement::getAsString)
-                ?.map { try { ItemTypes.valueOf(it) } catch (e: IllegalArgumentException) { null } }
+                ?.map { ItemTypes[it] }
                 ?.filterNotNull() ?: emptyList()
         val elements = Elements.values().map {
             json[it.name.toLowerCase()]?.asJsonObject?.let { json -> it to json }
@@ -84,5 +84,35 @@ object ItemManager {
 
     fun checkVanillaFile(path: Path) = path.fileName.toString().startsWith("vanilla", true)
 
+    val ItemStack.itemData: ItemData?
+        get() = items[itemMeta.displayName ?: ""] ?: vanillaItems[toSimpleItemStack()]
+
+    fun ItemStack.getItemMetadata(category: String) = itemMeta.lore
+            .map { it.split(" ") }
+            .map { it[0] to it[1] }
+            .toMap()[category]
+            ?.let { it to gson.fromJson<Map<String, Any>>(it) }
+            ?.let { Elements[it.first]?.let { itemData?.getElement(it) }?.getDefaultMetadata() to it.second }
+            ?.let { (it.first ?: emptyMap()) + it.second }
+
+    fun ItemStack.setItemMetadata(category: String, metadata: Map<String, Any>) {
+        val s = "${category.toUpperCase()} ${gson.toJson(metadata)}"
+        itemMeta = itemMeta.apply {
+            lore.mapIndexed { index, str ->
+                index to str
+            }.filter {
+                it.second.startsWith("$category ", true)
+            }.map { it.first }.firstOrNull()?.let {
+                lore = lore.apply { set(it, s) }
+            } ?: run {
+                lore = lore.apply { add(s) }
+            }
+        }
+    }
+
+    fun ItemStack.toSimpleItemStack() = SimpleItemStack(type, durability)
+
     inline fun <reified T: Any> Gson.fromJson(json: Reader): T = fromJson(json, T::class.java)
+
+    inline fun <reified T: Any> Gson.fromJson(json: String): T = fromJson(json, T::class.java)
 }
