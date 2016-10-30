@@ -5,4 +5,12 @@ enum class ItemTypes(val displayName: String) {
     WEAPON("Weapon"),
     TOOL("Tool"),
     FOOD("Food");
+
+    companion object {
+        operator fun get(name: String): ItemTypes? = try {
+            ItemTypes.valueOf(name)
+        } catch (e: IllegalArgumentException) {
+            null
+        }
+    }
 }
