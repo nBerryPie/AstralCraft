@@ -25,8 +25,7 @@ data class ItemData(
     fun createItemStack(amount: Int, metadata: Map<String, Map<String, Any>>) = ItemStack(Material.STICK, amount).apply {
         itemMeta = itemMeta.apply {
             displayName = id
-            lore = getDefaultMetadata().apply { putAll(metadata) }
-                    .map { "${it.key} ${ItemManager.gson.toJson(it.value)}" }
+            lore = metadata.map { "${it.key} ${ItemManager.gson.toJson(it.value)}" }
         }
     }
 
