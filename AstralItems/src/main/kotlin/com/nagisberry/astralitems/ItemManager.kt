@@ -110,6 +110,12 @@ object ItemManager {
         }
     }
 
+    fun ItemStack.removeItemMetadata(category: String) {
+        itemMeta = itemMeta.apply {
+            lore = lore.filter { it.startsWith("$category ", true) }
+        }
+    }
+
     fun ItemStack.toSimpleItemStack() = SimpleItemStack(type, durability)
 
     inline fun <reified T: Any> Gson.fromJson(json: Reader): T = fromJson(json, T::class.java)
