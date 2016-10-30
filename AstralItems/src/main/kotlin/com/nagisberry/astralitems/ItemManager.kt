@@ -27,9 +27,11 @@ object ItemManager {
     private val items = HashMap<String, ItemData>()
 
     fun loadFiles(dir: Path, isVanilla: Boolean = false) {
-        dir.forEach { path ->
+        Files.walk(dir, 1).forEach { path ->
             if (Files.isDirectory(path)) {
-                loadFiles(path, isVanilla || checkVanillaFile(path))
+                if (dir != path) {
+                    loadFiles(path, isVanilla || checkVanillaFile(path))
+                }
             } else if (path.toString().endsWith(".json", true)) {
                 try {
                     FileReader(path.toFile()).use { reader ->
