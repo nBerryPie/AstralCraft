@@ -90,12 +90,14 @@ object ItemManager {
         get() = items[itemMeta.displayName ?: ""] ?: vanillaItems[toSimpleItemStack()]
 
     fun ItemStack.getItemMetadata(category: String) = itemMeta.lore
-            .map { it.split(" ") }
-            .map { it[0] to it[1] }
-            .toMap()[category]
-            ?.let { it to gson.fromJson<Map<String, Any>>(it) }
-            ?.let { Elements[it.first]?.let { itemData?.getElement(it) }?.getDefaultMetadata() to it.second }
-            ?.let { (it.first ?: emptyMap()) + it.second }
+            .map { it.indexOf(" ").let { i -> it.slice(0..i-1) to it.slice(i+1..it.length-1) } }
+            .toMap()[category]?.let { gson.fromJson<Map<String, Any>>(it) }?.let {
+                if (category == "MAIN") {
+                    itemData?.let { mapOf("rarity" to it.rarity) }
+                } else {
+                    Elements[category]?.let { itemData?.getElement(it) }?.getDefaultMetadata()
+                } to it
+            }?.let { (it.first ?: emptyMap()) + it.second }
 
     fun ItemStack.setItemMetadata(category: String, metadata: Map<String, Any>) {
         val s = "${category.toUpperCase()} ${gson.toJson(metadata)}"
