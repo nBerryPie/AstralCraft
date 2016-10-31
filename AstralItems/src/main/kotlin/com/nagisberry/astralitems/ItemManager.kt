@@ -25,6 +25,12 @@ object ItemManager {
     private val vanillaItems = HashMap<SimpleItemStack, ItemData>()
     private val items = HashMap<String, ItemData>()
 
+    operator fun get(id: String) = items[id]
+
+    operator fun get(stack: SimpleItemStack) = vanillaItems[stack]
+
+    operator fun get(stack: ItemStack) = get(stack.itemMeta.displayName) ?: get(stack.toSimpleItemStack())
+
     fun reloadFiles(dir: Path) {
         vanillaItems.clear()
         items.clear()
