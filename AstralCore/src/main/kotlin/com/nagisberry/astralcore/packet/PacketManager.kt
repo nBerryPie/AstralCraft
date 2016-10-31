@@ -6,14 +6,16 @@ import org.bukkit.entity.Player
 
 object PacketManager {
 
+    private val HANDLER_NAME = "astral_craft"
+
     fun sendPacket(player: Player, packet: Packet<*>) {
         getPlayerConnection(player).sendPacket(packet)
     }
 
     fun inject(player: Player) {
         getChannelPipeline(player).let {
-            if (it["AstralCraft"] == null) {
-                it.addBefore("packet_handler", "AstralCraft", PlayerChannelHandler(player))
+            if (it[HANDLER_NAME] == null) {
+                it.addBefore("packet_handler", HANDLER_NAME, PlayerChannelHandler(player))
             }
         }
     }
