@@ -25,6 +25,12 @@ object ItemManager {
     private val vanillaItems = HashMap<SimpleItemStack, ItemData>()
     private val items = HashMap<String, ItemData>()
 
+    fun reloadFiles(dir: Path) {
+        vanillaItems.clear()
+        items.clear()
+        loadFiles(dir)
+    }
+
     fun loadFiles(dir: Path) {
         Files.walk(dir).filter {
             it.toString().endsWith(".json", true)
