@@ -90,7 +90,7 @@ object ItemManager {
         get() = items[itemMeta.displayName ?: ""] ?: vanillaItems[toSimpleItemStack()]
 
     fun ItemStack.getItemMetadata(category: String) = itemMeta.lore
-            .map { it.indexOf(" ").let { i -> it.slice(0..i-1) to it.slice(i+1..it.length-1) } }
+            .map { it.substringBefore(" ") to it.substringAfter(" ") }
             .toMap()[category]?.let { gson.fromJson<Map<String, Any>>(it) }?.let {
                 if (category == "MAIN") {
                     itemData?.let { mapOf("rarity" to it.rarity) }
