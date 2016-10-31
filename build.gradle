@@ -27,6 +27,7 @@ subprojects {
 
     dependencies {
         compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+        compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
         compile 'org.spigotmc:spigot:1.10.2-R0.1-SNAPSHOT'
     }
 }
