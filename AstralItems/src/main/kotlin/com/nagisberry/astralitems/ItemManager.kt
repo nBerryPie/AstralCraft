@@ -10,7 +10,6 @@ import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import java.io.IOException
-import java.io.Reader
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.*
@@ -93,44 +92,4 @@ object ItemManager {
     }
 
     fun checkVanillaFile(path: Path) = path.any { it.fileName.toString().startsWith("vanilla", true) }
-
-    val ItemStack.itemData: ItemData?
-        get() = items[itemMeta.displayName ?: ""] ?: vanillaItems[toSimpleItemStack()]
-
-    fun ItemStack.getItemMetadata(category: String) = itemMeta.lore
-            .map { it.substringBefore(" ") to it.substringAfter(" ") }
-            .toMap()[category]?.let { gson.fromJson<Map<String, Any>>(it) }?.let {
-                if (category == "MAIN") {
-                    itemData?.let { mapOf("rarity" to it.rarity) }
-                } else {
-                    Elements[category]?.let { itemData?.getElement(it) }?.getDefaultMetadata()
-                } to it
-            }?.let { (it.first ?: emptyMap()) + it.second }
-
-    fun ItemStack.setItemMetadata(category: String, metadata: Map<String, Any>) {
-        val s = "${category.toUpperCase()} ${gson.toJson(metadata)}"
-        itemMeta = itemMeta.apply {
-            lore.mapIndexed { index, str ->
-                index to str
-            }.filter {
-                it.second.startsWith("$category ", true)
-            }.map { it.first }.firstOrNull()?.let {
-                lore = lore.apply { set(it, s) }
-            } ?: run {
-                lore = lore.apply { add(s) }
-            }
-        }
-    }
-
-    fun ItemStack.removeItemMetadata(category: String) {
-        itemMeta = itemMeta.apply {
-            lore = lore.filter { it.startsWith("$category ", true) }
-        }
-    }
-
-    fun ItemStack.toSimpleItemStack() = SimpleItemStack(type, durability)
-
-    inline fun <reified T: Any> Gson.fromJson(json: Reader): T = fromJson(json, T::class.java)
-
-    inline fun <reified T: Any> Gson.fromJson(json: String): T = fromJson(json, T::class.java)
 }
