@@ -11,7 +11,11 @@ object PacketManager {
     }
 
     fun inject(player: Player) {
-        getChannelPipeline(player).addBefore("packet_handler", "AstralCraft", PlayerChannelHandler(player))
+        getChannelPipeline(player).let {
+            if (it["AstralCraft"] == null) {
+                it.addBefore("packet_handler", "AstralCraft", PlayerChannelHandler(player))
+            }
+        }
     }
 
     private fun getChannelPipeline(player: Player) =
