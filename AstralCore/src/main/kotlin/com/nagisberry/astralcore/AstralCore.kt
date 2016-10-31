@@ -15,17 +15,8 @@ class AstralCore: JavaPlugin(), Listener {
         Bukkit.getPluginManager().registerEvents(this, this)
     }
 
-    override fun onDisable() {
-        server.onlinePlayers.forEach { PacketManager.remove(it) }
-    }
-
     @EventHandler
     fun onPlayerJoin(evt: PlayerJoinEvent) {
         PacketManager.inject(evt.player)
-    }
-
-    @EventHandler
-    fun onPlayerQuit(evt: PlayerQuitEvent) {
-        PacketManager.remove(evt.player)
     }
 }

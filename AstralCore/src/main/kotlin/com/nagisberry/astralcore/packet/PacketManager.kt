@@ -14,10 +14,6 @@ object PacketManager {
         getChannelPipeline(player).addBefore("packet_handler", "AstralCraft", PlayerChannelHandler(player))
     }
 
-    fun remove(player: Player) {
-        getChannelPipeline(player).remove(PlayerChannelHandler::class.java)
-    }
-
     private fun getChannelPipeline(player: Player) =
             getPlayerConnection(player).networkManager.channel.pipeline()
 
