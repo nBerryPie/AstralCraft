@@ -9,7 +9,6 @@ import com.nagisberry.astralitems.item.ItemData
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
-import java.io.FileReader
 import java.io.IOException
 import java.io.Reader
 import java.nio.file.Files
