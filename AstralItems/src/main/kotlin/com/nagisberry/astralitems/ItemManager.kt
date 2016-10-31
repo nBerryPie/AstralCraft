@@ -26,27 +26,24 @@ object ItemManager {
     private val vanillaItems = HashMap<SimpleItemStack, ItemData>()
     private val items = HashMap<String, ItemData>()
 
-    fun loadFiles(dir: Path, isVanilla: Boolean = false) {
-        Files.walk(dir, 1).forEach { path ->
-            if (Files.isDirectory(path)) {
-                if (dir != path) {
-                    loadFiles(path, isVanilla || checkVanillaFile(path))
-                }
-            } else if (path.toString().endsWith(".json", true)) {
-                try {
-                    FileReader(path.toFile()).use { reader ->
-                        gson.fromJson<JsonArray>(reader).forEach { json ->
-                            if (json is JsonObject) {
-                                loadItemData(json, isVanilla || checkVanillaFile(path))
-                            } else {
-                                logger.warning("this is not JsonObject: $json")
-                            }
+    fun loadFiles(dir: Path) {
+        Files.walk(dir).filter {
+            it.toString().endsWith(".json", true)
+        }.forEach { path ->
+            println(path)
+            try {
+                path.toFile().reader().use { reader ->
+                    gson.fromJson<JsonArray>(reader).forEach { json ->
+                        if (json is JsonObject) {
+                            loadItemData(json, checkVanillaFile(path))
+                        } else {
+                            logger.warning("this is not JsonObject: $json")
                         }
                     }
-                } catch (e: IOException) {
-                    logger.warning("Load failure: " + path)
-                    e.printStackTrace()
                 }
+            } catch (e: IOException) {
+                logger.warning("Load failure: " + path)
+                e.printStackTrace()
             }
         }
     }
@@ -84,7 +81,7 @@ object ItemManager {
         }
     }
 
-    fun checkVanillaFile(path: Path) = path.fileName.toString().startsWith("vanilla", true)
+    fun checkVanillaFile(path: Path) = path.any { it.fileName.toString().startsWith("vanilla", true) }
 
     val ItemStack.itemData: ItemData?
         get() = items[itemMeta.displayName ?: ""] ?: vanillaItems[toSimpleItemStack()]
