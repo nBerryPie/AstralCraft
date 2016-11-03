@@ -12,12 +12,12 @@ val ItemStack.itemData: ItemData?
 fun ItemStack.getItemMetadata(category: String) = itemMeta.lore
         .map { it.substringBefore(" ") to it.substringAfter(" ") }
         .toMap()[category]?.let { ItemManager.gson.fromJson<Map<String, Any>>(it) }?.let {
-    if (category == "MAIN") {
-        itemData?.let { mapOf("rarity" to it.rarity) }
-    } else {
-        Elements[category]?.let { itemData?.getElement(it) }?.getDefaultMetadata()
-    } to it
-}?.let { (it.first ?: emptyMap()) + it.second }
+            if (category == "MAIN") {
+                itemData?.let { mapOf("rarity" to it.rarity) }
+            } else {
+                Elements[category]?.let { itemData?.getElement(it) }?.getDefaultMetadata()
+            } to it
+        }?.let { (it.first ?: emptyMap()) + it.second }
 
 fun ItemStack.setItemMetadata(category: String, metadata: Map<String, Any>) {
     val s = "${category.toUpperCase()} ${ItemManager.gson.toJson(metadata)}"
