@@ -5,12 +5,12 @@ import org.bukkit.command.CommandMap
 import org.bukkit.command.PluginCommand
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.SimplePluginManager
-import kotlin.reflect.declaredFunctions
+import kotlin.reflect.declaredMemberProperties
 import kotlin.reflect.jvm.isAccessible
 
 object CommandManager {
 
-    private val commandMap = SimplePluginManager::class.declaredFunctions
+    private val commandMap = SimplePluginManager::class.declaredMemberProperties
             .first { it.name == "commandMap" }
             .apply { isAccessible = true }
             .call(Bukkit.getPluginManager())
