@@ -46,10 +46,11 @@ fun ItemStack.toSimpleItemStack() = SimpleItemStack(type, durability)
 fun ItemStack.toDisplayItem() = itemData?.getDisplayItem(
         amount,
         itemMeta.lore
-                .map { it.substringBefore(" ") to it.substringAfter(" ") }
-                .toMap()
-                .mapValues { ItemManager.gson.fromJson<Map<String, Any>>(it.value) }
-) ?: ItemStack(type, amount, durability).apply { itemMeta = itemMeta.apply {
+                ?.map { it.substringBefore(" ") to it.substringAfter(" ") }
+                ?.toMap()?.mapValues {
+                    ItemManager.gson.fromJson<Map<String, Any>>(it.value)
+                } ?: emptyMap()
+) ?: ItemStack(type, amount, durability).apply { itemMeta = itemMeta?.apply {
     displayName = "${ChatColor.RED}ERROR: ItemData is Not Found"
 } }
 
