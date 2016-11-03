@@ -16,11 +16,7 @@ object CommandManager {
             .call(Bukkit.getPluginManager())
             .let { it as CommandMap }
 
-    private val constructorCommand = PluginCommand::class.constructors.first {
-        it.parameters.toList().let {
-            it.getOrNull(0)?.type?.equals(String) ?: false && it.getOrNull(1)?.type?.equals(Plugin::class) ?: false
-        }
-    }.apply { isAccessible = true }
+    private val constructorCommand = PluginCommand::class.constructors.first().apply { isAccessible = true }
 
     fun registerCommand(name: String, plugin: Plugin) {
         constructorCommand.call(name, plugin).let {
