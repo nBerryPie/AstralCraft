@@ -28,7 +28,7 @@ object ItemManager {
 
     operator fun get(stack: SimpleItemStack) = vanillaItems[stack]
 
-    operator fun get(stack: ItemStack) = stack.itemMeta.displayName?.let {
+    operator fun get(stack: ItemStack) = stack.itemMeta?.displayName?.let {
         get(it)
     } ?: get(stack.toSimpleItemStack())
 
