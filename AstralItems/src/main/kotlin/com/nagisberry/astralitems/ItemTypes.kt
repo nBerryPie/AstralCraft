@@ -5,7 +5,8 @@ enum class ItemTypes(val displayName: String) {
     WEAPON("Weapon"),
     TOOL("Tool"),
     FOOD("Food"),
-    BLOCK("Block");
+    BLOCK("Block"),
+    ARMOR("Armor");
 
     companion object {
         operator fun get(name: String): ItemTypes? = try {
