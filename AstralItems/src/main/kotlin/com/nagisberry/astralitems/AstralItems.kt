@@ -15,10 +15,19 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerGameModeChangeEvent
+import org.bukkit.inventory.ItemFlag
 import org.bukkit.plugin.java.JavaPlugin
 import java.nio.file.Files
 
 class AstralItems: JavaPlugin(), Listener {
+
+    companion object {
+        val hideFlags = arrayOf(
+                ItemFlag.HIDE_ATTRIBUTES,
+                ItemFlag.HIDE_UNBREAKABLE,
+                ItemFlag.HIDE_POTION_EFFECTS
+        )
+    }
 
     override fun onEnable() {
         CommandManager.registerCommand("items", this)
@@ -82,8 +91,11 @@ class AstralItems: JavaPlugin(), Listener {
                         .let {
                             it[message] = it[message]?.let { it as NMSItemStack? }
                                     ?.let(CraftItemStack::asBukkitCopy)
-                                    ?.let { it.toDisplayItem() }
-                                    ?.let(CraftItemStack::asNMSCopy)
+                                    ?.let {
+                                        if (it.itemMeta?.hasItemFlag(ItemFlag.HIDE_POTION_EFFECTS) ?: false) {
+                                            it
+                                        } else { it.toDisplayItem() }
+                                    }?.let(CraftItemStack::asNMSCopy)
                         }
             }
         }
@@ -105,7 +117,9 @@ class AstralItems: JavaPlugin(), Listener {
                 PacketPlayOutSetSlot(
                         0,
                         getNMSSlotNumber(slot),
-                        stack?.toDisplayItem()?.let(CraftItemStack::asNMSCopy)
+                        stack?.toDisplayItem()?.apply {
+                            itemMeta = itemMeta.apply { addItemFlags(*hideFlags) }
+                        }?.let(CraftItemStack::asNMSCopy)
                 ).let { PacketManager.sendPacket(player, it) }
             }
         }
