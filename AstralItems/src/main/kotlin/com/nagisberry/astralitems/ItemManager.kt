@@ -28,7 +28,9 @@ object ItemManager {
 
     operator fun get(stack: SimpleItemStack) = vanillaItems[stack]
 
-    operator fun get(stack: ItemStack) = get(stack.itemMeta.displayName) ?: get(stack.toSimpleItemStack())
+    operator fun get(stack: ItemStack) = stack.itemMeta.displayName?.let {
+        get(it)
+    } ?: get(stack.toSimpleItemStack())
 
     fun reloadFiles(dir: Path) {
         vanillaItems.clear()
