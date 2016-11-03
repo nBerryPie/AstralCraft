@@ -3,6 +3,7 @@ package com.nagisberry.astralitems
 import com.google.gson.Gson
 import com.nagisberry.astralitems.element.Elements
 import com.nagisberry.astralitems.item.ItemData
+import net.md_5.bungee.api.ChatColor
 import org.bukkit.inventory.ItemStack
 import java.io.Reader
 
@@ -41,6 +42,16 @@ fun ItemStack.removeItemMetadata(category: String) {
 }
 
 fun ItemStack.toSimpleItemStack() = SimpleItemStack(type, durability)
+
+fun ItemStack.toDisplayItem() = itemData?.getDisplayItem(
+        amount,
+        itemMeta.lore
+                .map { it.substringBefore(" ") to it.substringAfter(" ") }
+                .toMap()
+                .mapValues { ItemManager.gson.fromJson<Map<String, Any>>(it.value) }
+) ?: ItemStack(type, amount, durability).apply { itemMeta = itemMeta.apply {
+    displayName = "${ChatColor.RED}ERROR: ItemData is Not Found"
+} }
 
 inline fun <reified T: Any> Gson.fromJson(json: Reader): T = fromJson(json, T::class.java)
 

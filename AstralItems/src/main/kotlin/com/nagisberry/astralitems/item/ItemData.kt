@@ -4,6 +4,7 @@ import com.nagisberry.astralitems.ItemManager
 import com.nagisberry.astralitems.ItemTypes
 import com.nagisberry.astralitems.element.Elements
 import com.nagisberry.astralitems.element.IElement
+import net.md_5.bungee.api.ChatColor
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 
@@ -34,5 +35,16 @@ data class ItemData(
                 .mapValues { it.value.getDefaultMetadata() }
                 .filter { it.value.isNotEmpty() }
                 .let { putAll(it) }
+    }
+
+    fun getDisplayItem(amount: Int, metadata: Map<String, Map<String, Any>>) = ItemStack(material, amount, damage).apply {
+        itemMeta = itemMeta.apply {
+            displayName = "${ChatColor.WHITE}$name"
+            lore = listOf(
+                    *(description.map { "${ChatColor.GRAY}$it" }.toTypedArray()),
+                    "",
+                    "Type: ${if (types.isEmpty()) "Undefined" else types.joinToString(", ")}"
+            )
+        }
     }
 }
