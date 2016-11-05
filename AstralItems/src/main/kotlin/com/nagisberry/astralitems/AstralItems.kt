@@ -1,11 +1,11 @@
 package com.nagisberry.astralitems
 
+import com.google.common.base.Optional
 import com.nagisberry.astralcore.command.CommandManager
 import com.nagisberry.astralcore.event.PacketWriteEvent
 import com.nagisberry.astralcore.packet.PacketManager
+import net.minecraft.server.v1_10_R1.*
 import net.minecraft.server.v1_10_R1.ItemStack as NMSItemStack
-import net.minecraft.server.v1_10_R1.PacketPlayOutSetSlot
-import net.minecraft.server.v1_10_R1.PacketPlayOutWindowItems
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.command.Command
@@ -16,6 +16,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerGameModeChangeEvent
 import org.bukkit.inventory.ItemFlag
+import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
 import java.nio.file.Files
 
@@ -75,28 +76,51 @@ class AstralItems: JavaPlugin(), Listener {
         if (evt.player.gameMode != GameMode.CREATIVE) {
             val message = evt.message
             if (message is PacketPlayOutWindowItems) {
-                PacketPlayOutWindowItems::class.java.getDeclaredField("b")
-                        .apply { isAccessible = true }
-                        .let {
-                            it[message] = it[message].let { it as Array<*> }
-                                    .map { it as NMSItemStack? }
-                                    .map(CraftItemStack::asBukkitCopy)
-                                    .map { it.toDisplayItem() }
-                                    .map(CraftItemStack::asNMSCopy)
-                                    .toTypedArray()
-                        }
+                message.javaClass.getDeclaredField("b").apply { isAccessible = true }.let {
+                    it[message] = it[message].let { it as Array<*> }
+                            .map { it as NMSItemStack? }
+                            .map(CraftItemStack::asBukkitCopy)
+                            .map { it.toDisplayItem() }
+                            .map(CraftItemStack::asNMSCopy)
+                            .toTypedArray()
+                }
             } else if (message is PacketPlayOutSetSlot) {
-                PacketPlayOutSetSlot::class.java.getDeclaredField("c")
-                        .apply { isAccessible = true }
-                        .let {
-                            it[message] = it[message]?.let { it as NMSItemStack? }
-                                    ?.let(CraftItemStack::asBukkitCopy)
-                                    ?.let {
-                                        if (it.itemMeta?.hasItemFlag(ItemFlag.HIDE_POTION_EFFECTS) ?: false) {
+                message.javaClass.getDeclaredField("c").apply { isAccessible = true }.let {
+                    it[message] = it[message]?.let { it as NMSItemStack? }
+                            ?.let(CraftItemStack::asBukkitCopy)
+                            ?.let {
+                                if (it.itemMeta?.hasItemFlag(ItemFlag.HIDE_POTION_EFFECTS) ?: false) {
+                                    it
+                                } else { it.toDisplayItem() }
+                            }?.let(CraftItemStack::asNMSCopy)
+                }
+            } else if (message is PacketPlayOutEntityMetadata) {
+                val field = DataWatcher.Item::class.java.getDeclaredField("b").apply { isAccessible = true }
+                message.javaClass.getDeclaredField("b").apply { isAccessible = true }.let {
+                    (it[message] as List<*>).map { it as DataWatcher.Item<*> }.let {
+                        val (itemData, amount) = it.getOrNull(6)?.b()?.let { it as? Optional<*> }?.let {
+                            it.orNull() as? NMSItemStack?
+                        }?.let(CraftItemStack::asBukkitCopy)?.let { it.itemData to it.amount } ?: null to 0
+                        if (itemData == null) { it } else {
+                            mutableListOf(*it.toTypedArray()).apply {
+                                this[2] = this[2].apply {
+                                    field[this] = itemData.name
+                                }
+                                this[3] = this[3].apply {
+                                    field[this] = true
+                                }
+                                this[6] = itemData.let {
+                                    ItemStack(it.material, amount, it.damage)
+                                }.let(CraftItemStack::asNMSCopy).let { Optional.of(it) }.let {
+                                    DataWatcher.Item<Optional<NMSItemStack>>(
+                                            get(6).a() as DataWatcherObject<Optional<NMSItemStack>>,
                                             it
-                                        } else { it.toDisplayItem() }
-                                    }?.let(CraftItemStack::asNMSCopy)
+                                    )
+                                }
+                            }
                         }
+                    }.let { list -> it[message] = list }
+                }
             }
         }
     }
