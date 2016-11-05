@@ -53,8 +53,8 @@ class AstralItems: JavaPlugin(), Listener {
                         sender.sendMessage("/$label ${args[0]} <ItemID> (<amount>)")
                     } else {
                         ItemManager[args[1]]?.createItemStack(
-                                if (args.size >= 2) args[2].toInt() else 1,
-                                if (args.size >= 3) ItemManager.gson
+                                if (args.size > 2) args[2].toInt() else 1,
+                                if (args.size > 3) ItemManager.gson
                                         .fromJson<Map<String, Map<String, Any>>>(
                                                 args.copyOfRange(3, args.size - 1).joinToString(" ")
                                         )
