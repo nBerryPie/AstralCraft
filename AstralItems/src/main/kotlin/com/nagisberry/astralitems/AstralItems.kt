@@ -2,6 +2,7 @@ package com.nagisberry.astralitems
 
 import com.google.common.base.Optional
 import com.nagisberry.astralcore.AstralCore
+import com.nagisberry.astralcore.AstralCore.Companion.fromJson
 import com.nagisberry.astralcore.command.CommandManager
 import com.nagisberry.astralcore.event.PacketWriteEvent
 import com.nagisberry.astralcore.packet.PacketManager

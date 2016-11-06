@@ -4,6 +4,7 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.nagisberry.astralcore.AstralCore
+import com.nagisberry.astralcore.AstralCore.Companion.fromJson
 import com.nagisberry.astralitems.element.Elements
 import com.nagisberry.astralitems.item.ItemData
 import org.bukkit.Bukkit

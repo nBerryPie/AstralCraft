@@ -1,12 +1,11 @@
 package com.nagisberry.astralitems
 
-import com.google.gson.Gson
 import com.nagisberry.astralcore.AstralCore
+import com.nagisberry.astralcore.AstralCore.Companion.fromJson
 import com.nagisberry.astralitems.element.Elements
 import com.nagisberry.astralitems.item.ItemData
 import net.md_5.bungee.api.ChatColor
 import org.bukkit.inventory.ItemStack
-import java.io.Reader
 
 val ItemStack.itemData: ItemData?
     get() = ItemManager[this]
@@ -54,7 +53,3 @@ fun ItemStack.toDisplayItem() = itemData?.getDisplayItem(
 ) ?: ItemStack(type, amount, durability).apply { itemMeta = itemMeta?.apply {
     displayName = "${ChatColor.RED}ERROR: ItemData is Not Found"
 } }
-
-inline fun <reified T: Any> Gson.fromJson(json: Reader): T = fromJson(json, T::class.java)
-
-inline fun <reified T: Any> Gson.fromJson(json: String): T = fromJson(json, T::class.java)

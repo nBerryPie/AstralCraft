@@ -2,13 +2,11 @@ package com.nagisberry.astralitems.item
 
 import com.nagisberry.astralcore.AstralCore
 import com.nagisberry.astralitems.AstralItems
-import com.nagisberry.astralitems.ItemManager
 import com.nagisberry.astralitems.ItemTypes
 import com.nagisberry.astralitems.element.Elements
 import com.nagisberry.astralitems.element.IElement
 import net.md_5.bungee.api.ChatColor
 import org.bukkit.Material
-import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 
 data class ItemData(
