@@ -134,7 +134,7 @@ class AstralItems: JavaPlugin(), Listener {
             player.inventory.contents.forEachIndexed { slot, stack ->
                 PacketPlayOutSetSlot(
                         0, getNMSSlotNumber(slot),
-                        stack?.apply { itemMeta = itemMeta.apply {
+                        stack?.clone()?.apply { itemMeta = itemMeta.apply {
                             addItemFlags(ItemFlag.HIDE_PLACED_ON)
                         } }?.let(CraftItemStack::asNMSCopy)
                 ).let { PacketManager.sendPacket(player, it) }
