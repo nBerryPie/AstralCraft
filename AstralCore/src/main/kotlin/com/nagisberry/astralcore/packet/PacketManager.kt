@@ -15,7 +15,11 @@ object PacketManager {
     fun inject(player: Player) {
         getChannelPipeline(player).let {
             if (it[HANDLER_NAME] == null) {
-                it.addBefore("packet_handler", HANDLER_NAME, PlayerChannelHandler(player))
+                it.addBefore(
+                        "packet_handler",
+                        HANDLER_NAME,
+                        PlayerChannelHandler(player)
+                )
             }
         }
     }

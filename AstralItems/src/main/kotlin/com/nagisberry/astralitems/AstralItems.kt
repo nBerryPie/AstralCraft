@@ -38,9 +38,7 @@ class AstralItems: JavaPlugin(), Listener {
     override fun onEnable() {
         CommandManager.registerCommand("items", this)
         Bukkit.getPluginManager().registerEvents(this, this)
-        if (!dataFolder.exists()) {
-            Files.createDirectory(dataFolder.toPath())
-        }
+        if (!dataFolder.exists()) { Files.createDirectory(dataFolder.toPath()) }
         ItemManager.loadFiles(dataFolder.toPath())
     }
 
@@ -59,12 +57,12 @@ class AstralItems: JavaPlugin(), Listener {
                         sender.sendMessage("/$label ${args[0]} <ItemID> (<amount>)")
                     } else {
                         ItemManager[args[1]]?.createItemStack(
-                                if (args.size > 2) args[2].toInt() else 1,
-                                if (args.size > 3) AstralCore.gson
-                                        .fromJson<Map<String, Map<String, Any>>>(
-                                                args.copyOfRange(3, args.size).joinToString(" ")
-                                        )
-                                else emptyMap()
+                                if (args.size > 2) { args[2].toInt() } else { 1 },
+                                if (args.size > 3) {
+                                    AstralCore.gson.fromJson<Map<String, Map<String, Any>>>(
+                                            args.copyOfRange(3, args.size).joinToString(" ")
+                                    )
+                                } else { emptyMap() }
                         )?.let {
                             sender.inventory.addItem(it)
                         } ?: sender.sendMessage("[AstralItems] 存在しないItemIDです")
@@ -86,12 +84,12 @@ class AstralItems: JavaPlugin(), Listener {
                             .map { it as NMSItemStack? }
                             .map(CraftItemStack::asBukkitCopy)
                             .map { it.toDisplayItem() }
-                            .map(CraftItemStack::asNMSCopy)
-                            .toTypedArray()
+                            .map(CraftItemStack::asNMSCopy).toTypedArray()
                 }
             } else if (message is PacketPlayOutSetSlot) {
                 message.javaClass.getDeclaredField("c").apply { isAccessible = true }.let {
-                    it[message] = it[message]?.let { it as NMSItemStack? }
+                    it[message] = it[message]
+                            ?.let { it as NMSItemStack? }
                             ?.let(CraftItemStack::asBukkitCopy)
                             ?.let {
                                 if (it.itemMeta?.hasItemFlag(ItemFlag.HIDE_PLACED_ON) ?: false) {
@@ -118,8 +116,7 @@ class AstralItems: JavaPlugin(), Listener {
                                     ItemStack(it.material, amount, it.damage)
                                 }.let(CraftItemStack::asNMSCopy).let { Optional.of(it) }.let {
                                     DataWatcher.Item<Optional<NMSItemStack>>(
-                                            get(6).a() as DataWatcherObject<Optional<NMSItemStack>>,
-                                            it
+                                            get(6).a() as DataWatcherObject<Optional<NMSItemStack>>, it
                                     )
                                 }
                             }
@@ -136,23 +133,19 @@ class AstralItems: JavaPlugin(), Listener {
         if (evt.newGameMode == GameMode.CREATIVE) {
             player.inventory.contents.forEachIndexed { slot, stack ->
                 PacketPlayOutSetSlot(
-                        0,
-                        getNMSSlotNumber(slot),
-                        stack?.apply {
-                            itemMeta = itemMeta.apply {
-                                addItemFlags(ItemFlag.HIDE_PLACED_ON)
-                            }
-                        }?.let(CraftItemStack::asNMSCopy)
+                        0, getNMSSlotNumber(slot),
+                        stack?.apply { itemMeta = itemMeta.apply {
+                            addItemFlags(ItemFlag.HIDE_PLACED_ON)
+                        } }?.let(CraftItemStack::asNMSCopy)
                 ).let { PacketManager.sendPacket(player, it) }
             }
         } else if (player.gameMode == GameMode.CREATIVE) {
             player.inventory.contents.forEachIndexed { slot, stack ->
                 PacketPlayOutSetSlot(
-                        0,
-                        getNMSSlotNumber(slot),
-                        stack?.toDisplayItem()?.apply {
-                            itemMeta = itemMeta.apply { addItemFlags(*hideFlags) }
-                        }?.let(CraftItemStack::asNMSCopy)
+                        0, getNMSSlotNumber(slot),
+                        stack?.toDisplayItem()?.apply { itemMeta = itemMeta.apply {
+                            addItemFlags(*hideFlags)
+                        } }?.let(CraftItemStack::asNMSCopy)
                 ).let { PacketManager.sendPacket(player, it) }
             }
         }

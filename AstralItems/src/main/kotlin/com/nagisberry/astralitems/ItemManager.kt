@@ -42,7 +42,6 @@ object ItemManager {
         Files.walk(dir).filter {
             it.toString().endsWith(".json", true)
         }.forEach { path ->
-            println(path)
             try {
                 path.toFile().reader().use { reader ->
                     AstralCore.gson.fromJson<JsonArray>(reader).forEach { json ->
@@ -93,5 +92,7 @@ object ItemManager {
         }
     }
 
-    fun checkVanillaFile(path: Path) = path.any { it.fileName.toString().startsWith("vanilla", true) }
+    fun checkVanillaFile(path: Path) = path.any {
+        it.fileName.toString().startsWith("vanilla", true)
+    }
 }
