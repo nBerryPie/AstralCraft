@@ -101,25 +101,24 @@ class AstralItems: JavaPlugin(), Listener {
                 val field = DataWatcher.Item::class.java.getDeclaredField("b").apply { isAccessible = true }
                 message.javaClass.getDeclaredField("b").apply { isAccessible = true }.let {
                     (it[message] as List<*>).map { it as DataWatcher.Item<*> }.let {
-                        val (itemData, amount) = it.getOrNull(6)?.b()?.let { it as? Optional<*> }?.let {
-                            it.orNull() as? NMSItemStack?
-                        }?.let(CraftItemStack::asBukkitCopy)?.let { it.itemData to it.amount } ?: null to 0
+                        val (itemData, amount) = it.filter { it.a().a() == 6 }.map {
+                            (it.b() as? Optional<*>)?.orNull() as? NMSItemStack?
+                        }.filterNotNull().getOrNull(0)?.let(CraftItemStack::asBukkitCopy)?.let {
+                            it.itemData to it.amount
+                        } ?: null to 0
                         if (itemData == null) { it } else {
-                            mutableListOf(*it.toTypedArray()).apply {
-                                this[2] = this[2].apply {
-                                    field[this] = itemData.name
-                                }
-                                this[3] = this[3].apply {
-                                    field[this] = true
-                                }
-                                this[6] = itemData.let {
+                            mutableListOf(*it.toTypedArray()).map { item -> when (item.a().a()) {
+                                2 -> item.apply { field[item] = itemData.name }
+                                3 -> item.apply { field[item] = true }
+                                6 -> itemData.let {
                                     ItemStack(it.material, amount, it.damage)
                                 }.let(CraftItemStack::asNMSCopy).let { Optional.of(it) }.let {
                                     DataWatcher.Item<Optional<NMSItemStack>>(
-                                            get(6).a() as DataWatcherObject<Optional<NMSItemStack>>, it
+                                            item.a() as DataWatcherObject<Optional<NMSItemStack>>, it
                                     )
                                 }
-                            }
+                                else -> item
+                            } }
                         }
                     }.let { list -> it[message] = list }
                 }
