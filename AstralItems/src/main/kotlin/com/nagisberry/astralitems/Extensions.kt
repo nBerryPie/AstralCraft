@@ -1,6 +1,7 @@
 package com.nagisberry.astralitems
 
 import com.google.gson.Gson
+import com.nagisberry.astralcore.AstralCore
 import com.nagisberry.astralitems.element.Elements
 import com.nagisberry.astralitems.item.ItemData
 import net.md_5.bungee.api.ChatColor
@@ -12,7 +13,7 @@ val ItemStack.itemData: ItemData?
 
 fun ItemStack.getItemMetadata(category: String) = itemMeta.lore
         .map { it.substringBefore(" ") to it.substringAfter(" ") }
-        .toMap()[category]?.let { ItemManager.gson.fromJson<Map<String, Any>>(it) }?.let {
+        .toMap()[category]?.let { AstralCore.gson.fromJson<Map<String, Any>>(it) }?.let {
             if (category == "MAIN") {
                 itemData?.let { mapOf("rarity" to it.rarity) }
             } else {
@@ -21,7 +22,7 @@ fun ItemStack.getItemMetadata(category: String) = itemMeta.lore
         }?.let { (it.first ?: emptyMap()) + it.second }
 
 fun ItemStack.setItemMetadata(category: String, metadata: Map<String, Any>) {
-    val s = "${category.toUpperCase()} ${ItemManager.gson.toJson(metadata)}"
+    val s = "${category.toUpperCase()} ${AstralCore.gson.toJson(metadata)}"
     itemMeta = itemMeta.apply {
         lore.mapIndexed { index, str ->
             index to str
@@ -48,7 +49,7 @@ fun ItemStack.toDisplayItem() = itemData?.getDisplayItem(
         itemMeta.lore
                 ?.map { it.substringBefore(" ") to it.substringAfter(" ") }
                 ?.toMap()?.mapValues {
-                    ItemManager.gson.fromJson<Map<String, Any>>(it.value)
+                    AstralCore.gson.fromJson<Map<String, Any>>(it.value)
                 } ?: emptyMap()
 ) ?: ItemStack(type, amount, durability).apply { itemMeta = itemMeta?.apply {
     displayName = "${ChatColor.RED}ERROR: ItemData is Not Found"

@@ -1,6 +1,7 @@
 package com.nagisberry.astralitems
 
 import com.google.common.base.Optional
+import com.nagisberry.astralcore.AstralCore
 import com.nagisberry.astralcore.command.CommandManager
 import com.nagisberry.astralcore.event.PacketWriteEvent
 import com.nagisberry.astralcore.packet.PacketManager
@@ -58,7 +59,7 @@ class AstralItems: JavaPlugin(), Listener {
                     } else {
                         ItemManager[args[1]]?.createItemStack(
                                 if (args.size > 2) args[2].toInt() else 1,
-                                if (args.size > 3) ItemManager.gson
+                                if (args.size > 3) AstralCore.gson
                                         .fromJson<Map<String, Map<String, Any>>>(
                                                 args.copyOfRange(3, args.size).joinToString(" ")
                                         )

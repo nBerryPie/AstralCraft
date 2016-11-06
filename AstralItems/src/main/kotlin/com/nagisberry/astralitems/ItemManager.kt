@@ -1,9 +1,9 @@
 package com.nagisberry.astralitems
 
-import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
+import com.nagisberry.astralcore.AstralCore
 import com.nagisberry.astralitems.element.Elements
 import com.nagisberry.astralitems.item.ItemData
 import org.bukkit.Bukkit
@@ -18,7 +18,6 @@ object ItemManager {
 
     private val ID_VANILLA = "vanilla_item"
 
-    val gson = Gson()
     private val logger = Bukkit.getLogger()
 
     private val vanillaItems = HashMap<SimpleItemStack, ItemData>()
@@ -45,7 +44,7 @@ object ItemManager {
             println(path)
             try {
                 path.toFile().reader().use { reader ->
-                    gson.fromJson<JsonArray>(reader).forEach { json ->
+                    AstralCore.gson.fromJson<JsonArray>(reader).forEach { json ->
                         if (json is JsonObject) {
                             loadItemData(json, checkVanillaFile(path))
                         } else {

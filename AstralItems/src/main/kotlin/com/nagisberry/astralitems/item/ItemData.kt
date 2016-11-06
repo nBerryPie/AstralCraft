@@ -1,5 +1,6 @@
 package com.nagisberry.astralitems.item
 
+import com.nagisberry.astralcore.AstralCore
 import com.nagisberry.astralitems.AstralItems
 import com.nagisberry.astralitems.ItemManager
 import com.nagisberry.astralitems.ItemTypes
@@ -28,7 +29,7 @@ data class ItemData(
     fun createItemStack(amount: Int, metadata: Map<String, Map<String, Any>>) = ItemStack(Material.STICK, amount).apply {
         itemMeta = itemMeta.apply {
             displayName = id
-            lore = metadata.map { "${it.key} ${ItemManager.gson.toJson(it.value)}" }
+            lore = metadata.map { "${it.key} ${AstralCore.gson.toJson(it.value)}" }
         }
     }
 
