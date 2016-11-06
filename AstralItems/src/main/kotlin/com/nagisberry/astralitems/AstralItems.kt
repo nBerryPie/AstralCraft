@@ -57,7 +57,7 @@ class AstralItems: JavaPlugin(), Listener {
                                 if (args.size > 2) args[2].toInt() else 1,
                                 if (args.size > 3) ItemManager.gson
                                         .fromJson<Map<String, Map<String, Any>>>(
-                                                args.copyOfRange(3, args.size - 1).joinToString(" ")
+                                                args.copyOfRange(3, args.size).joinToString(" ")
                                         )
                                 else emptyMap()
                         )?.let {
