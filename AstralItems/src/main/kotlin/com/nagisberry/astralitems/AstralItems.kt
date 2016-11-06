@@ -151,14 +151,12 @@ class AstralItems: JavaPlugin(), Listener {
         }
     }
 
-    private fun getNMSSlotNumber(bukkitSlotNumber: Int): Int {
-        return when (bukkitSlotNumber) {
-            in 0..8 -> bukkitSlotNumber + 36
-            in 9..35 -> bukkitSlotNumber
-            in 80..83 -> bukkitSlotNumber - 79
-            in 100..103 -> (bukkitSlotNumber - 108) * -1
-            106 -> 45
-            else -> -1
-        }
+    private fun getNMSSlotNumber(bukkitSlotNumber: Int) = when (bukkitSlotNumber) {
+        in 0..8 -> bukkitSlotNumber + 36
+        in 9..35 -> bukkitSlotNumber
+        in 80..83 -> bukkitSlotNumber - 79
+        in 100..103 -> (bukkitSlotNumber - 108) * -1
+        106 -> 45
+        else -> -1
     }
 }
