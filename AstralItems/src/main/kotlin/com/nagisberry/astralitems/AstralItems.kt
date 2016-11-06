@@ -25,6 +25,9 @@ class AstralItems: JavaPlugin(), Listener {
     companion object {
         val hideFlags = arrayOf(
                 ItemFlag.HIDE_ATTRIBUTES,
+                ItemFlag.HIDE_DESTROYS,
+                ItemFlag.HIDE_ENCHANTS,
+                ItemFlag.HIDE_PLACED_ON,
                 ItemFlag.HIDE_UNBREAKABLE,
                 ItemFlag.HIDE_POTION_EFFECTS
         )
@@ -89,7 +92,7 @@ class AstralItems: JavaPlugin(), Listener {
                     it[message] = it[message]?.let { it as NMSItemStack? }
                             ?.let(CraftItemStack::asBukkitCopy)
                             ?.let {
-                                if (it.itemMeta?.hasItemFlag(ItemFlag.HIDE_POTION_EFFECTS) ?: false) {
+                                if (it.itemMeta?.hasItemFlag(ItemFlag.HIDE_PLACED_ON) ?: false) {
                                     it
                                 } else { it.toDisplayItem() }
                             }?.let(CraftItemStack::asNMSCopy)
@@ -133,7 +136,11 @@ class AstralItems: JavaPlugin(), Listener {
                 PacketPlayOutSetSlot(
                         0,
                         getNMSSlotNumber(slot),
-                        CraftItemStack.asNMSCopy(stack)
+                        stack?.apply {
+                            itemMeta = itemMeta.apply {
+                                addItemFlags(ItemFlag.HIDE_PLACED_ON)
+                            }
+                        }?.let(CraftItemStack::asNMSCopy)
                 ).let { PacketManager.sendPacket(player, it) }
             }
         } else if (player.gameMode == GameMode.CREATIVE) {
