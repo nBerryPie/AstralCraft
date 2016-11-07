@@ -46,6 +46,7 @@ data class ItemData(
                     "",
                     "Type: ${if (types.isEmpty()) "Undefined" else types.joinToString(", ")}"
             )
+            spigot().isUnbreakable = true
             addItemFlags(*AstralItems.hideFlags)
         }
     }
