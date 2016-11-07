@@ -10,17 +10,17 @@ import org.bukkit.inventory.ItemStack
 val ItemStack.itemData: ItemData?
     get() = ItemManager[this]
 
-fun ItemStack.getItemMetadata(category: String) = itemMeta.lore.map {
+fun ItemStack.getItemMetadata(category: String) = (itemMeta.lore ?: emptyList()).map {
     it.substringBefore(" ") to it.substringAfter(" ")
 }.toMap()[category]?.let {
     AstralCore.gson.fromJson<Map<String, Any>>(it)
-}?.let {
+}.let {
     if (category == "MAIN") {
         itemData?.let { mapOf("rarity" to it.rarity) }
     } else {
         Elements[category]?.let { itemData?.getElement(it) }?.getDefaultMetadata()
     } to it
-}?.let { (it.first ?: emptyMap()) + it.second }
+}.let { (it.first ?: emptyMap()) + (it.second ?: emptyMap()) }
 
 fun ItemStack.setItemMetadata(category: String, metadata: Map<String, Any>) {
     val s = "${category.toUpperCase()} ${AstralCore.gson.toJson(metadata)}"
