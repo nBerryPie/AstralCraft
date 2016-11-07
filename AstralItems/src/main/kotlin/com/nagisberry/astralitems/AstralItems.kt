@@ -167,9 +167,8 @@ class AstralItems: JavaPlugin(), Listener {
     private fun getNMSSlotNumber(bukkitSlotNumber: Int) = when (bukkitSlotNumber) {
         in 0..8 -> bukkitSlotNumber + 36
         in 9..35 -> bukkitSlotNumber
-        in 80..83 -> bukkitSlotNumber - 79
-        in 100..103 -> (bukkitSlotNumber - 108) * -1
-        106 -> 45
+        in 36..39 -> (bukkitSlotNumber - 44) * -1
+        40 -> 45
         else -> -1
     }
 }
