@@ -84,7 +84,7 @@ class AstralItems: JavaPlugin(), Listener {
                     it[message] = it[message].let { it as Array<*> }
                             .map { it as NMSItemStack? }
                             .map(CraftItemStack::asBukkitCopy)
-                            .map { it.toDisplayItem() }
+                            .map(ItemStack::toDisplayItem)
                             .map(CraftItemStack::asNMSCopy).toTypedArray()
                 }
             } else if (message is PacketPlayOutSetSlot) {
