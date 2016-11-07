@@ -125,6 +125,17 @@ class AstralItems: JavaPlugin(), Listener {
                     }
                 }.let { list -> it[message] = list }
             }
+        } else if (message is PacketPlayOutEntityEquipment) {
+            message.javaClass.getDeclaredField("b").apply { isAccessible = true }?.let {
+                if((it[message] as EnumItemSlot).a() == EnumItemSlot.Function.HAND) {
+                    message.javaClass.getDeclaredField("c").apply { isAccessible = true }?.let {
+                        it[message] = (it[message] as NMSItemStack?)
+                                ?.let(CraftItemStack::asBukkitCopy)
+                                ?.let(ItemStack::toDisplayItem)
+                                ?.let(CraftItemStack::asNMSCopy)
+                    }
+                }
+            }
         }
     }
 
