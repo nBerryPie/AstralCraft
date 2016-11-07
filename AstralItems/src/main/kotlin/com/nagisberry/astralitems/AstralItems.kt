@@ -102,20 +102,20 @@ class AstralItems: JavaPlugin(), Listener {
         }
         if (message is PacketPlayOutEntityMetadata) {
             val field = DataWatcher.Item::class.java.getDeclaredField("b").apply { isAccessible = true }
-            message.javaClass.getDeclaredField("b").apply { isAccessible = true }.let {
-                (it[message] as List<*>).map { it as DataWatcher.Item<*> }.let {
-                    val (itemData, rarity, amount) = it.filter { it.a().a() == 6 }.map {
+            message.javaClass.getDeclaredField("b").apply { isAccessible = true }.let { f ->
+                (f[message] as List<*>).map { it as DataWatcher.Item<*> }.let {
+                    val itemStack = it.filter { it.a().a() == 6 }.map {
                         (it.b() as? Optional<*>)?.orNull() as? NMSItemStack?
                     }.filterNotNull().getOrNull(0)?.let(CraftItemStack::asBukkitCopy)?.let {
-                        Triple(it.itemData, (it.getItemMetadata("MAIN")["rarity"] as? Number?)?.toInt(), it.amount)
-                    } ?: Triple(null, null, 0)
-                    if (itemData == null) { it } else {
-                        mutableListOf(*it.toTypedArray()).map { item -> when (item.a().a()) {
-                            2 -> item.apply { field[item] = itemData.getDisplayName(rarity) }
+                        if (it.itemMeta.hasItemFlag(ItemFlag.HIDE_PLACED_ON)) { null } else {
+                            it.toDisplayItem()
+                        }
+                    } ?: null
+                    if (itemStack != null) {
+                        f[message] = mutableListOf(*it.toTypedArray()).map { item -> when (item.a().a()) {
+                            2 -> item.apply { field[item] = itemStack.itemMeta.displayName }
                             3 -> item.apply { field[item] = true }
-                            6 -> itemData.let {
-                                ItemStack(it.material, amount, it.damage)
-                            }.let(CraftItemStack::asNMSCopy).let { Optional.of(it) }.let {
+                            6 -> itemStack.let(CraftItemStack::asNMSCopy).let { Optional.of(it) }.let {
                                 DataWatcher.Item<Optional<NMSItemStack>>(
                                         item.a() as DataWatcherObject<Optional<NMSItemStack>>, it
                                 )
@@ -123,7 +123,7 @@ class AstralItems: JavaPlugin(), Listener {
                             else -> item
                         } }
                     }
-                }.let { list -> it[message] = list }
+                }
             }
         } else if (message is PacketPlayOutEntityEquipment) {
             message.javaClass.getDeclaredField("b").apply { isAccessible = true }?.let {
