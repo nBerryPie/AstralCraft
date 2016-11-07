@@ -3,6 +3,7 @@ package com.nagisberry.astralitems.item
 import com.nagisberry.astralcore.AstralCore
 import com.nagisberry.astralitems.AstralItems
 import com.nagisberry.astralitems.ItemTypes
+import com.nagisberry.astralitems.Rarity
 import com.nagisberry.astralitems.element.Elements
 import com.nagisberry.astralitems.element.IElement
 import net.md_5.bungee.api.ChatColor
@@ -19,6 +20,8 @@ data class ItemData(
         val types: List<ItemTypes>,
         private val elements: Map<Elements, IElement>
 ) {
+
+    fun getDisplayName(rarityNum: Int?) ="${Rarity[rarityNum ?: rarity].color}$name"
 
     fun hasElement(element: Elements) = elements.containsKey(element)
 
@@ -40,7 +43,7 @@ data class ItemData(
 
     fun getDisplayItem(amount: Int, metadata: Map<String, Map<String, Any>>) = ItemStack(material, amount, damage).apply {
         itemMeta = itemMeta.apply {
-            displayName = "${ChatColor.WHITE}$name"
+            displayName = getDisplayName((metadata["MAIN"]?.get("rarity") as? Number?)?.toInt())
             lore = listOf(
                     *(description.map { "${ChatColor.GRAY}$it" }.toTypedArray()),
                     "",
