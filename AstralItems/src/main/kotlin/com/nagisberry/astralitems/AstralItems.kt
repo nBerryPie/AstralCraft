@@ -104,14 +104,14 @@ class AstralItems: JavaPlugin(), Listener {
             val field = DataWatcher.Item::class.java.getDeclaredField("b").apply { isAccessible = true }
             message.javaClass.getDeclaredField("b").apply { isAccessible = true }.let {
                 (it[message] as List<*>).map { it as DataWatcher.Item<*> }.let {
-                    val (itemData, amount) = it.filter { it.a().a() == 6 }.map {
+                    val (itemData, rarity, amount) = it.filter { it.a().a() == 6 }.map {
                         (it.b() as? Optional<*>)?.orNull() as? NMSItemStack?
                     }.filterNotNull().getOrNull(0)?.let(CraftItemStack::asBukkitCopy)?.let {
-                        it.itemData to it.amount
-                    } ?: null to 0
+                        Triple(it.itemData, (it.getItemMetadata("MAIN")["rarity"] as? Number?)?.toInt(), it.amount)
+                    } ?: Triple(null, null, 0)
                     if (itemData == null) { it } else {
                         mutableListOf(*it.toTypedArray()).map { item -> when (item.a().a()) {
-                            2 -> item.apply { field[item] = itemData.name }
+                            2 -> item.apply { field[item] = itemData.getDisplayName(rarity) }
                             3 -> item.apply { field[item] = true }
                             6 -> itemData.let {
                                 ItemStack(it.material, amount, it.damage)
