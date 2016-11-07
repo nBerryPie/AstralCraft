@@ -21,6 +21,7 @@ import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
 import java.nio.file.Files
+import kotlin.concurrent.thread
 
 class AstralItems: JavaPlugin(), Listener {
 
@@ -133,10 +134,11 @@ class AstralItems: JavaPlugin(), Listener {
             player.inventory.contents.forEachIndexed { slot, stack ->
                 PacketPlayOutSetSlot(
                         0, getNMSSlotNumber(slot),
-                        stack?.clone()?.apply { itemMeta = itemMeta.apply {
-                            addItemFlags(ItemFlag.HIDE_PLACED_ON)
-                        } }?.let(CraftItemStack::asNMSCopy)
-                ).let { PacketManager.sendPacket(player, it) }
+                        stack?.let(CraftItemStack::asNMSCopy)
+                ).let { thread {
+                    Thread.sleep(10)
+                    PacketManager.sendPacket(player, it)
+                } }
             }
         } else if (player.gameMode == GameMode.CREATIVE) {
             player.inventory.contents.forEachIndexed { slot, stack ->
