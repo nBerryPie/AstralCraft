@@ -13,7 +13,7 @@ class PlayerChannelHandler(private val player: Player): ChannelDuplexHandler() {
     override fun channelRead(content: ChannelHandlerContext, message: Any) {
         PacketReadEvent(player, content, message).let {
             Bukkit.getServer().pluginManager.callEvent(it)
-            if (!it.isCancelled) {
+            if (!it.cancel) {
                 super.channelRead(content, message)
             }
         }
@@ -22,7 +22,7 @@ class PlayerChannelHandler(private val player: Player): ChannelDuplexHandler() {
     override fun write(content: ChannelHandlerContext, message: Any, promise: ChannelPromise) {
         PacketWriteEvent(player, content, message, promise).let {
             Bukkit.getServer().pluginManager.callEvent(it)
-            if (!it.isCancelled) {
+            if (!it.cancel) {
                 super.write(content, message, promise)
             }
         }
