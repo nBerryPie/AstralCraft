@@ -8,7 +8,7 @@ import org.bukkit.event.HandlerList
 class PacketWriteEvent(player: Player, context: ChannelHandlerContext, message: Any, var promise: ChannelPromise): PacketEvent(player, context, message) {
 
     companion object {
-        private val _handlers: HandlerList = HandlerList()
+        private val _handlers = HandlerList()
 
         @JvmStatic
         fun getHandlerList() = _handlers

@@ -7,7 +7,7 @@ import org.bukkit.event.HandlerList
 class PacketReadEvent(player: Player, context: ChannelHandlerContext, message: Any): PacketEvent(player, context, message) {
 
     companion object {
-        private val _handlers: HandlerList = HandlerList()
+        private val _handlers = HandlerList()
 
         @JvmStatic
         fun getHandlerList() = _handlers
