@@ -21,12 +21,6 @@ class AstralCore: JavaPlugin(), Listener {
 
     override fun onEnable() {
         PacketManager.inject(server)
-        server.onlinePlayers.forEach { PacketManager.inject(it) }
         Bukkit.getPluginManager().registerEvents(this, this)
-    }
-
-    @EventHandler
-    fun onPlayerJoin(evt: PlayerJoinEvent) {
-        PacketManager.inject(evt.player)
     }
 }
