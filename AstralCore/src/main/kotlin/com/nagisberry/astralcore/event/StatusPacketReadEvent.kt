@@ -1,9 +1,10 @@
 package com.nagisberry.astralcore.event
 
+import com.mojang.authlib.GameProfile
 import io.netty.channel.ChannelHandlerContext
 import org.bukkit.event.HandlerList
 
-class StatusPacketReadEvent(context: ChannelHandlerContext, message: Any): StatusPacketEvent(context, message) {
+class StatusPacketReadEvent(profile: GameProfile?, context: ChannelHandlerContext, message: Any): StatusPacketEvent(profile, context, message) {
 
     companion object {
         private val _handlers = HandlerList()
