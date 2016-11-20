@@ -1,8 +1,8 @@
 package com.nagisberry.astralcore.packet
 
 import com.mojang.authlib.GameProfile
-import com.nagisberry.astralcore.event.StatusPacketReadEvent
-import com.nagisberry.astralcore.event.StatusPacketWriteEvent
+import com.nagisberry.astralcore.event.PacketReadEvent
+import com.nagisberry.astralcore.event.PacketWriteEvent
 import io.netty.channel.ChannelDuplexHandler
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.ChannelPromise
@@ -25,7 +25,7 @@ class ServerChannelHandler: ChannelDuplexHandler() {
         if (msg is PacketLoginInStart) {
             profile = msg.a()
         }
-        StatusPacketReadEvent(profile, ctx, msg).let {
+        PacketReadEvent(profile, ctx, msg).let {
             Bukkit.getServer().pluginManager.callEvent(it)
             if (!it.cancel) {
                 super.channelRead(ctx, msg)
@@ -37,7 +37,7 @@ class ServerChannelHandler: ChannelDuplexHandler() {
         if (msg is PacketLoginOutSuccess) {
             profile = PROPERTY_PACKET_LOGIN_OUT_SUCCESS_A.get(msg) as GameProfile
         }
-        StatusPacketWriteEvent(profile, ctx, msg, promise).let {
+        PacketWriteEvent(profile, ctx, msg, promise).let {
             Bukkit.getServer().pluginManager.callEvent(it)
             if(!it.cancel) {
                 super.write(ctx, msg, promise)

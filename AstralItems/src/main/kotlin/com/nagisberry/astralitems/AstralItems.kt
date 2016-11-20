@@ -4,7 +4,7 @@ import com.google.common.base.Optional
 import com.nagisberry.astralcore.AstralCore
 import com.nagisberry.astralcore.AstralCore.Companion.fromJson
 import com.nagisberry.astralcore.command.CommandManager
-import com.nagisberry.astralcore.event.StatusPacketWriteEvent
+import com.nagisberry.astralcore.event.PacketWriteEvent
 import com.nagisberry.astralcore.packet.PacketManager
 import net.minecraft.server.v1_10_R1.*
 import net.minecraft.server.v1_10_R1.ItemStack as NMSItemStack
@@ -76,7 +76,7 @@ class AstralItems: JavaPlugin(), Listener {
     }
 
     @EventHandler
-    fun onPacketWrite(evt: StatusPacketWriteEvent) {
+    fun onPacketWrite(evt: PacketWriteEvent) {
         val message = evt.message
         val player = evt.profile?.let { server.getPlayer(it.id) } ?: return
         if (player.gameMode != GameMode.CREATIVE) {
