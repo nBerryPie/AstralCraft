@@ -10,20 +10,20 @@ import org.bukkit.entity.Player
 
 class PlayerChannelHandler(private val player: Player): ChannelDuplexHandler() {
 
-    override fun channelRead(content: ChannelHandlerContext, message: Any) {
-        PacketReadEvent(player, content, message).let {
+    override fun channelRead(ctx: ChannelHandlerContext, msg: Any) {
+        PacketReadEvent(player, ctx, msg).let {
             Bukkit.getServer().pluginManager.callEvent(it)
             if (!it.cancel) {
-                super.channelRead(content, message)
+                super.channelRead(ctx, msg)
             }
         }
     }
 
-    override fun write(content: ChannelHandlerContext, message: Any, promise: ChannelPromise) {
-        PacketWriteEvent(player, content, message, promise).let {
+    override fun write(ctx: ChannelHandlerContext, msg: Any, promise: ChannelPromise) {
+        PacketWriteEvent(player, ctx, msg, promise).let {
             Bukkit.getServer().pluginManager.callEvent(it)
             if (!it.cancel) {
-                super.write(content, message, promise)
+                super.write(ctx, msg, promise)
             }
         }
     }
