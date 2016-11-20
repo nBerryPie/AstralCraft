@@ -21,18 +21,6 @@ object PacketManager {
         getPlayerConnection(player).sendPacket(packet)
     }
 
-    fun inject(player: Player) {
-        getChannelPipeline(player).let {
-            if (it[HANDLER_NAME] == null) {
-                it.addBefore(
-                        "packet_handler",
-                        HANDLER_NAME,
-                        PlayerChannelHandler(player)
-                )
-            }
-        }
-    }
-
     fun inject(server: Server) {
         (server as CraftServer).server.serverConnection.let(PROPERTY_SERVER_CONNECTION_G).let {
             it as List<*>
